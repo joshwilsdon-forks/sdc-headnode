@@ -6,7 +6,7 @@
 #
 
 #
-# Copyright 2020 Joyent, Inc.
+# Copyright 2021 Joyent, Inc.
 #
 
 #
@@ -188,8 +188,8 @@ function check_ntp
     fi
 
     if [[ $OS_TYPE == "SunOS" ]]; then
-        # NTP needs to be off and we don't bother turning it back on because we're
-        # going to reboot when everything is ok.
+        # NTP needs to be off and we don't bother turning it back on because
+        # we're going to reboot when everything is ok.
         /usr/sbin/svcadm disable svc:/network/ntp:default
     fi
 
@@ -305,7 +305,8 @@ function check_disk_space
 {
     local pool_json="$1"
     # local RAM_MiB=${SYSINFO_MiB_of_Memory}
-    local RAM_MiB=$(sysinfo | json 'MiB of Memory')
+    local RAM_MiB
+    RAM_MiB=$(sysinfo | json 'MiB of Memory')
     local space
     space=$(json capacity < ${pool_json})
     local Disk_MiB
@@ -341,7 +342,8 @@ function swap_in_GiB
 
     # Find system RAM for multiple
     # RAM_MiB=${SYSINFO_MiB_of_Memory}
-    local RAM_MiB=$(sysinfo | json 'MiB of Memory')
+    local RAM_MiB
+    RAM_MiB=$(sysinfo | json 'MiB of Memory')
     RAM_GiB=$(ceil "${RAM_MiB} / 1024.0")
 
     swap_val=${swap%?}      # number
@@ -433,8 +435,11 @@ function create_zpool
 #
 create_dump()
 {
-    local RAM_MiB=$(sysinfo | json 'MiB of Memory')
-    local dumpsize=$(( ${RAM_MiB} / 2 ))
+    local RAM_MiB
+    RAM_MiB=$(sysinfo | json 'MiB of Memory')
+
+    local dumpsize
+    dumpsize=$(( ${RAM_MiB} / 2 ))
 
     local encr_opt
 
